@@ -3,11 +3,11 @@ const router = express.Router();
 const db = require('../db');
 const { v4: uuidv4 } = require('uuid');
 
-router.get('/seats', (req, res) => {
+router.get('/', (req, res) => {
   res.json(db.seats);
 });
 
-router.get('/seats/:id', (req, res) => {
+router.get('/:id', (req, res) => {
   const id = parseInt(req.params.id);
   const seat = db.seats.find(item => item.id === id);
 
@@ -18,7 +18,7 @@ router.get('/seats/:id', (req, res) => {
   }
 });
 
-router.post('/seats', (req, res) => {
+router.post('/', (req, res) => {
   const { day, seat, client, email } = req.body;
 
   if (day && seat && client && email) {
@@ -43,7 +43,7 @@ router.post('/seats', (req, res) => {
   }
 });
 
-router.put('/seats/:id', (req, res) => {
+router.put('/:id', (req, res) => {
   const id = parseInt(req.params.id);
   const { day, seat, client, email } = req.body;
 
@@ -60,7 +60,7 @@ router.put('/seats/:id', (req, res) => {
   }
 });
 
-router.delete('/seats/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
   const id = parseInt(req.params.id);
   const index = db.seats.findIndex(item => item.id === id);
 

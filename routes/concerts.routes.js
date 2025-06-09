@@ -3,11 +3,11 @@ const router = express.Router();
 const db = require('../db');
 const { v4: uuidv4 } = require('uuid');
 
-router.get('/concerts', (req, res) => {
+router.get('/', (req, res) => {
   res.json(db.concerts);
 });
 
-router.get('/concerts/:id', (req, res) => {
+router.get('/:id', (req, res) => {
   const id = parseInt(req.params.id);
   const concert = db.concerts.find(item => item.id === id);
 
@@ -18,7 +18,7 @@ router.get('/concerts/:id', (req, res) => {
   }
 });
 
-router.post('/concerts', (req, res) => {
+router.post('/', (req, res) => {
   const { performer, genre, price, day, image } = req.body;
 
   if (performer && genre && price && day && image) {
@@ -37,7 +37,7 @@ router.post('/concerts', (req, res) => {
   }
 });
 
-router.put('/concerts/:id', (req, res) => {
+router.put('/:id', (req, res) => {
   const id = parseInt(req.params.id);
   const { performer, genre, price, day, image } = req.body;
 
@@ -55,7 +55,7 @@ router.put('/concerts/:id', (req, res) => {
   }
 });
 
-router.delete('/concerts/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
   const id = parseInt(req.params.id);
   const index = db.concerts.findIndex(item => item.id === id);
 
