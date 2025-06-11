@@ -1,6 +1,14 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST']
+  }
+});
+
 const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
 
@@ -8,6 +16,15 @@ app.use(cors());
 app.use(express.json());
 
 const db = require('./db');
+
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
+
+io.on('connection', (socket) => {
+  console.log('🧩 New socket connected:', socket.id);
+});
 
 // ścieżki API
 const testimonialsRoutes = require('./routes/testimonials.routes');
@@ -33,6 +50,10 @@ app.use((req, res) => {
 });
 
 
-app.listen(process.env.PORT || 8000, () => {
+http.listen(process.env.PORT || 8000, () => {
   console.log('Server is running on port: 8000');
+});
+
+io.on('connection', (socket) => {
+  console.log('Nowy socket!');
 });

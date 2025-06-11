@@ -37,6 +37,7 @@ router.post('/', (req, res) => {
       email,
     };
     db.seats.push(newSeat);
+    req.io.emit('seatsUpdated');
     res.json({ message: 'OK' });
   } else {
     res.status(400).json({ message: 'Missing data' });
