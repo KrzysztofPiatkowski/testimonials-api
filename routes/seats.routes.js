@@ -3,74 +3,16 @@ const router = express.Router();
 const db = require('../db');
 const { v4: uuidv4 } = require('uuid');
 
-router.get('/', (req, res) => {
-  res.json(db.seats);
-});
+const seatsController = require('../controllers/seats.controller');
 
-router.get('/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const seat = db.seats.find(item => item.id === id);
+router.get('/', seatsController.getAll);
 
-  if (seat) {
-    res.json(seat);
-  } else {
-    res.status(404).json({ message: 'Seat not found' });
-  }
-});
+router.get('/:id', seatsController.getId);
 
-router.post('/', (req, res) => {
-  const { day, seat, client, email } = req.body;
+router.post('/', seatsController.post);
 
-  if (day && seat && client && email) {
+router.put('/:id', seatsController.put);
 
-    const isTaken = db.seats.some(s => s.day === day && s.seat === seat);
-
-    if (isTaken) {
-      return res.status(409).json({ message: "The slot is already taken..." });
-    }
-
-    const newSeat = {
-      id: uuidv4(),
-      day,
-      seat,
-      client,
-      email,
-    };
-    db.seats.push(newSeat);
-    req.io.emit('seatsUpdated');
-    res.json({ message: 'OK' });
-  } else {
-    res.status(400).json({ message: 'Missing data' });
-  }
-});
-
-router.put('/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const { day, seat, client, email } = req.body;
-
-  const seatToUpdate = db.seats.find(item => item.id === id);
-
-  if (seatToUpdate) {
-    seatToUpdate.day = day;
-    seatToUpdate.seat = seat;
-    seatToUpdate.client = client;
-    seatToUpdate.email = email;
-    res.json({ message: 'OK' });
-  } else {
-    res.status(404).json({ message: 'Seat not found' });
-  }
-});
-
-router.delete('/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const index = db.seats.findIndex(item => item.id === id);
-
-  if (index !== -1) {
-    db.seats.splice(index, 1);
-    res.json({ message: 'OK' });
-  } else {
-    res.status(404).json({ message: 'Seat not found' });
-  }
-});
+router.delete('/:id', seatsController.delete);
 
 module.exports = router;

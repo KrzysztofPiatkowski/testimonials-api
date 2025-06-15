@@ -3,68 +3,18 @@ const router = express.Router();
 const db = require('../db');
 const { v4: uuidv4 } = require('uuid');
 
-router.get('/', (req, res) => {
-  res.json(db.testimonials);
-});
+const testimonialsController = require('../controllers/testimonials.controller');
 
-router.get('/random', (req, res) => {
-  const index = Math.floor(Math.random() * db.testimonials.length);
-  const randomTestimonial = db.testimonials[index];
-  res.json(randomTestimonial);
-});
+router.get('/', testimonialsController.getAll);
 
-router.get('/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const testimonial = db.testimonials.find(item => item.id === id);
+router.get('/random', testimonialsController.getRandom);
 
-  if (testimonial) {
-    res.json(testimonial);
-  } else {
-    res.status(404).json({ message: 'Testimonial not found' });
-  }
-});
+router.get('/:id', testimonialsController.getId);
 
-router.post('/', (req, res) => {
-  const { author, text } = req.body;
+router.post('/', testimonialsController.post);
 
-  if (author && text) {
-    const newTestimonial = {
-      id: uuidv4(),
-      author,
-      text
-    };
-    db.testimonials.push(newTestimonial);
-    res.json({ message: 'OK' });
-  } else {
-    res.status(400).json({ message: 'Missing data' });
-  }
-});
+router.put('/:id', testimonialsController.put);
 
-router.put('/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const { author, text } = req.body;
-
-  const testimonial = db.testimonials.find(item => item.id === id);
-
-  if (testimonial) {
-    testimonial.author = author;
-    testimonial.text = text;
-    res.json({ message: 'OK' });
-  } else {
-    res.status(404).json({ message: 'Testimonial not found' });
-  }
-});
-
-router.delete('/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const index = db.testimonials.findIndex(item => item.id === id);
-
-  if (index !== -1) {
-    db.testimonials.splice(index, 1);
-    res.json({ message: 'OK' });
-  } else {
-    res.status(404).json({ message: 'Testimonial not found' });
-  }
-});
+router.delete('/:id', testimonialsController.delete);
 
 module.exports = router;

@@ -1,6 +1,10 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+
+const connectDB = require('./db');
+connectDB();
+
 const http = require('http').Server(app);
 const io = require('socket.io')(http, {
   cors: {
@@ -14,8 +18,6 @@ const { v4: uuidv4 } = require('uuid');
 
 app.use(cors());
 app.use(express.json());
-
-const db = require('./db');
 
 app.use((req, res, next) => {
   req.io = io;
