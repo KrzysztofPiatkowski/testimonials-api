@@ -14,9 +14,11 @@ const io = require('socket.io')(http, {
 });
 
 const cors = require('cors');
+const helmet = require('helmet');
 const { v4: uuidv4 } = require('uuid');
 
 app.use(cors());
+app.use(helmet());
 app.use(express.json());
 
 app.use((req, res, next) => {
