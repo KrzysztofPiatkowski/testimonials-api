@@ -1,4 +1,5 @@
 const Testimonial = require('../models/testimonial.model');
+const sanitize = require('mongo-sanitize');
 
 exports.getAll = async (req, res) => {
   try {
@@ -32,7 +33,8 @@ exports.getId = async (req, res) => {
 };
 
 exports.post = async (req, res) => {
-  const { author, text } = req.body;
+  const author = sanitize(req.body.author);
+  const text = sanitize(req.body.text);
 
   if (!author || !text) {
     return res.status(400).json({ message: 'Missing data' });
@@ -48,7 +50,8 @@ exports.post = async (req, res) => {
 };
 
 exports.put = async (req, res) => {
-  const { author, text } = req.body;
+  const author = sanitize(req.body.author);
+  const text = sanitize(req.body.text);
 
   try {
     const testimonial = await Testimonial.findById(req.params.id);
